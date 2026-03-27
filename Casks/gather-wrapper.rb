@@ -1,6 +1,6 @@
 cask "gather-wrapper" do
-  version "0.2.5"
-  sha256 "18c97df9177cb40fbb21d6ca5fcd88dc759ba847be341cead26e145396267c1c"
+  version "0.2.6"
+  sha256 "e0793e2579f4d618109d7405bd4c74a678027973589aa0bb12025984669bfc02"
 
   url "https://github.com/schulz-codes/gather-wrapper/releases/download/v#{version}/Gather-#{version}-universal-mac.zip"
   name "Gather"
