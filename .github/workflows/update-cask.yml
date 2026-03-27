@@ -1,0 +1,33 @@
+name: Update Cask
+
+on:
+  repository_dispatch:
+    types: [update-cask]
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download ZIP and compute SHA256
+        run: |
+          curl -sL "${{ github.event.client_payload.zip_url }}" -o gather.zip
+          SHA=$(sha256sum gather.zip | cut -d' ' -f1)
+          echo "SHA256=$SHA" >> "$GITHUB_ENV"
+
+      - name: Update Cask
+        run: |
+          VERSION="${{ github.event.client_payload.version }}"
+          sed -i "s/version \".*\"/version \"$VERSION\"/" Casks/gather-wrapper.rb
+          sed -i "s/sha256 \".*\"/sha256 \"$SHA256\"/" Casks/gather-wrapper.rb
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add Casks/gather-wrapper.rb
+          git commit -m "Update gather-wrapper to v${{ github.event.client_payload.version }}"
+          git push
